@@ -296,15 +296,12 @@ class AvatarWidget extends \Widget implements \uploadable
                     $strFile = $strUploadFolder . '/' . $targetName;
                     $objModel = \Dbafs::addResource($strFile, true);
 
-					/* Hack: The global version of \FrontendUser will overwrite this on destroy. We need to change that one.
-					// new Avatar for Member
-                    $objMember = \MemberModel::findByPk($this->User->id);
-                    $objMember->avatar = $objModel->uuid;
-                    $objMember->save(); */
-					
+                    // new Avatar for Member
 					$this->import('FrontendUser', 'User');
-					$this->User->avatar = $objModel->uuid;
-					$this->User->save();
+                    $this->User->avatar = $objModel->uuid;
+                    $this->User->save();
+
+                    $this->varValue = $objModel->uuid;
 
                     $this->log(
                         'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
