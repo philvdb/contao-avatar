@@ -277,9 +277,9 @@ class AvatarWidget extends \Widget implements \uploadable
                     if ($blnResize) {
                         \Image::resize(
                             $strUploadFolder . '/' . $targetName,
-                            $arrImageSize[0],
-                            $arrImageSize[1],
-                            $arrImageSize[2]
+                            $arrImage[0],
+                            $arrImage[1],
+                            $arrImage[2]
                         );
                     }
 
@@ -296,12 +296,15 @@ class AvatarWidget extends \Widget implements \uploadable
                     $strFile = $strUploadFolder . '/' . $targetName;
                     $objModel = \Dbafs::addResource($strFile, true);
 
-                    // new Avatar for Member
+					/* Hack: The global version of \FrontendUser will overwrite this on destroy. We need to change that one.
+					// new Avatar for Member
                     $objMember = \MemberModel::findByPk($this->User->id);
                     $objMember->avatar = $objModel->uuid;
-                    $objMember->save();
-
-                    $this->varValue = $objModel->uuid;
+                    $objMember->save(); */
+					
+					$this->import('FrontendUser', 'User');
+					$this->User->avatar = $objModel->uuid;
+					$this->User->save();
 
                     $this->log(
                         'File "' . $targetName . '" has been moved to "' . $strUploadFolder . '"',
@@ -348,7 +351,10 @@ class AvatarWidget extends \Widget implements \uploadable
                     $arrPreviewImage[0],
                     $arrPreviewImage[1],
                     $arrPreviewImage[2]
-                ) . '" width="' . $arrPreviewImage[0] . '" height="' . $arrPreviewImage[1] . '" alt="' . $strAlt . '" class="avatar">';
+                ) . '" alt="' . $strAlt . '" class="avatar">';
+//               ) . '" width="' . $arrPreviewImage[0] . '" height="' . $arrPreviewImage[1] . '" alt="' . $strAlt . '" class="avatar">';
+// The original line would lead to distortions in the preview
+			
         } elseif ($this->User->gender != '') {
             $template .= '<img src="' . TL_FILES_URL . \Image::get(
                     "system/modules/avatar/assets/" . $this->User->gender . ".png",
