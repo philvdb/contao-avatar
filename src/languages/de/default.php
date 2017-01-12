@@ -16,3 +16,6 @@ $GLOBALS['TL_LANG']['AVATAR']['file']  = array
 );
 $GLOBALS['TL_LANG']['AVATAR']['save']  = "Avatar speichern";
 $GLOBALS['TL_LANG']['AVATAR']['reset'] = "Zurücksetzen auf Vorgabe";
+
+
+$GLOBALS['TL_LANG']['ERR']['filenotimage'] = "Die hochgeladene Datei kann nicht als Bild verarbeitet werden. Bist du sicher, dass es eins ist?";

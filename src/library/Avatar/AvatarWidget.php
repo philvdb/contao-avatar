@@ -198,15 +198,28 @@ class AvatarWidget extends \Widget implements \uploadable
                 } else {
                     $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], $arrImage[1]));
                     $this->log(
-                        'File "' . $file['name'] . '" exceeds the maximum image height of ' . $GLOBALS['TL_CONFIG']['imageHeight'] . ' pixels',
-                        'FormFileUpload validate()',
-                        TL_ERROR
+                      'File "' . $file['name'] . '" exceeds the maximum image height of ' . $GLOBALS['TL_CONFIG']['imageHeight'] . ' pixels',
+                      'FormFileUpload validate()',
+                      TL_ERROR
                     );
 
                     unset($_FILES[$this->strName]);
                     return;
                 }
             }
+        }
+        else
+        // We cannot determine file dimensions, so we assume it's not a valid image file
+        {
+          $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filenotimage']));
+          $this->log(
+            'File "' . $file['name'] . '" does not appear to be a valid image file, discarded.',
+            'FormFileUpload validate()',
+            TL_ERROR
+          );
+
+          unset($_FILES[$this->strName]);
+          return;
         }
 
         // Store file in the session and optionally on the server
@@ -351,7 +364,7 @@ class AvatarWidget extends \Widget implements \uploadable
                 ) . '" alt="' . $strAlt . '" class="avatar">';
 //               ) . '" width="' . $arrPreviewImage[0] . '" height="' . $arrPreviewImage[1] . '" alt="' . $strAlt . '" class="avatar">';
 // The original line would lead to distortions in the preview
-			
+
         } elseif ($this->User->gender != '') {
             $template .= '<img src="' . TL_FILES_URL . \Image::get(
                     "system/modules/avatar/assets/" . $this->User->gender . ".png",
@@ -387,4 +400,4 @@ class AvatarWidget extends \Widget implements \uploadable
 
         return $template;
     }
-}  
+}
